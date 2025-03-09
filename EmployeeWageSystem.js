@@ -1,5 +1,4 @@
-///////////////// UC8 ///////////////////
-let totalEmpWage = 0;
+///////////////// UC9 ///////////////////
 const IS_PART_TIME = 1;
 const IS_FULL_TIME = 2;
 const PART_TIME_HOURS = 4;
@@ -10,8 +9,8 @@ const Num_of_Working_Days = 20;
 
 let total_EmployeeHours = 0;
 let total_WorkingDays = 0;
-let employee_Daily_WagesArr = [];
 let dayWiseWageMap = new Map();
+let dayWiseHourMap = new Map();
 
 function getWorkingHours(empCheck) {
     switch (empCheck) {
@@ -34,19 +33,25 @@ while (total_EmployeeHours <= Max_Hours_In_Month && total_WorkingDays < Num_of_W
     let empHours = getWorkingHours(empCheck);
     total_EmployeeHours += empHours;
     let dailyWage = calculateDailyWage(empHours);
-    employee_Daily_WagesArr.push(dailyWage);
     dayWiseWageMap.set(total_WorkingDays, dailyWage);
+    dayWiseHourMap.set(total_WorkingDays, empHours);
 }
 
-let empWage = calculateDailyWage(total_EmployeeHours);
+// a. Calculate total Wage and total Hours worked using arrow functions
+const totalWage = Array.from(dayWiseWageMap.values()).reduce((total, wage) => total + wage, 0);
+const totalHours = Array.from(dayWiseHourMap.values()).reduce((total, hours) => total + hours, 0);
 
-// Calculate total wage from Map
-let totalWageFromMap = Array.from(dayWiseWageMap.values()).reduce((total, dailyWage) => total + dailyWage, 0);
+console.log(`Total Hours Worked: ${totalHours}, Total Employee Wage: ${totalWage}`);
 
-// Display Day-Wage mapping
-console.log("Day-Wise Wage Map:");
-for (let [day, wage] of dayWiseWageMap) {
-    console.log(`Day ${day}: Wage = ${wage}`);
-}
+// b. Show full working days, part working days, and no working days
+let fullWorkingDays = [], partWorkingDays = [], noWorkingDays = [];
 
-console.log("Total Employee Wage calculated from Map: " + totalWageFromMap);
+dayWiseHourMap.forEach((hours, day) => {
+    if (hours === FULL_TIME_HOURS) fullWorkingDays.push(day);
+    else if (hours === PART_TIME_HOURS) partWorkingDays.push(day);
+    else noWorkingDays.push(day);
+});
+
+console.log("Full Working Days: " + fullWorkingDays);
+console.log("Part Working Days: " + partWorkingDays);
+console.log("No Working Days: " + noWorkingDays);
